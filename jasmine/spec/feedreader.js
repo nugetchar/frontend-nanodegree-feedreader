@@ -29,9 +29,8 @@ $(function() {
         });
 
 
-        /* TODO: Write a test that loops through each feed
-         * in the allFeeds object and ensures it has a URL defined
-         * and that the URL is not empty.
+        /*
+         * This test ensures that every RSS Feeds has an non-empty URL
          */
         it('have a URL defined and != empty', function() {
             allFeeds.forEach((val, i, t) => {
@@ -40,10 +39,8 @@ $(function() {
             });
         });
 
-
-        /* TODO: Write a test that loops through each feed
-         * in the allFeeds object and ensures it has a name defined
-         * and that the name is not empty.
+        /*
+         * This test ensures that every RSS Feeds has an non-empty name
          */
         it('have a name defined and != empty', function() {
             allFeeds.forEach((val, i, t) => {
@@ -54,25 +51,21 @@ $(function() {
     });
 
 
-    /* TODO: Write a new test suite named "The menu" */
+    /* Test Suite for the menu */
     describe('The menu', function(){
         let menuIconLink = $('.menu-icon-link');
         let body = $('body');
-        /* TODO: Write a test that ensures the menu element is
-         * hidden by default. You'll have to analyze the HTML and
-         * the CSS to determine how we're performing the
-         * hiding/showing of the menu element.
+        /*
+         * This test ensures the menu is hidden by default
          */
         it('is hidden by default', function() {
             // We expect the <body> to have the 'menu-hidden' class
             expect(body.hasClass('menu-hidden')).toBeTruthy();
         });
 
-         /* TODO: Write a test that ensures the menu changes
-          * visibility when the menu icon is clicked. This test
-          * should have two expectations: does the menu display when
-          * clicked and does it hide when clicked again.
-          */
+        /*
+         * This test ensures the menu is visible when clicked, then hidden when clicked again
+         */
         it('is visible when clicked on, then hidden when clicked on again', function() {
             menuIconLink.trigger('click');
             expect(body.hasClass('menu-hidden')).toBeFalsy();
@@ -80,39 +73,44 @@ $(function() {
             expect(body.hasClass('menu-hidden')).toBeTruthy();
         });
     });
-    /* TODO: Write a new test suite named "Initial Entries" */
+    
+    /* Test Suite for initial entries */
     describe('Initial Entries', function(){
-        /* TODO: Write a test that ensures when the loadFeed
-         * function is called and completes its work, there is at least
-         * a single .entry element within the .feed container.
-         * Remember, loadFeed() is asynchronous so this test will require
-         * the use of Jasmine's beforeEach and asynchronous done() function.
+        /*
+         * We load feed before each test (asynchronous)
          */
         beforeEach(function(done){
             loadFeed(0, done);
         });
-
+        /*
+         * This test ensures there is at least a single .entry element
+         */
         it('contain at least a single .entry element withing the .feed container', function() {
             expect($('.entry').length).toBeGreaterThan(0);
         });
     });
-    /* TODO: Write a new test suite named "New Feed Selection"*/
+
+    /* Test Suite for New Feed Selection */
     describe('New Feed Selection', function(){
-        /* TODO: Write a test that ensures when a new feed is loaded
-         * by the loadFeed function that the content actually changes.
-         * Remember, loadFeed() is asynchronous.
-         */
-        var now, next;
-        var i=0;
+
+        let now, next;
+        let i=0;
+        let callback;
 
         beforeEach(function(done){
-            now = $('.entry:nth(' + i + ') > h2').text();
-            loadFeed(i, done);
+            callback = () => {
+                now = $('.entry:first > h2').text();
+                done();    
+            }
+            loadFeed(i, callback);
         });
 
+        /*
+         * This test ensures content changes whe na new feed is loaded
+         */
         it('should change content when a new feed is loaded', function(done) {
             loadFeed(i+1, function() {
-                next = $('.entry:nth(' + (i+1) + ') > h2').text();
+                next = $('.entry:first > h2').text();
                 expect(now).not.toEqual(next);
                 done();
             });
